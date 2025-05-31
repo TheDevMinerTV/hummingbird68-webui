@@ -30,12 +30,12 @@ type RGBEffect = {
 	sleepTime: number;
 };
 
-class Kochi68 {
+class Hummingbird68 {
 	#hid: HIDDevice;
 
 	static async open(hidDevice: HIDDevice) {
 		await hidDevice.open();
-		return new Kochi68(hidDevice);
+		return new Hummingbird68(hidDevice);
 	}
 
 	private constructor(hidDevice: HIDDevice) {
@@ -120,7 +120,7 @@ class Kochi68 {
 }
 
 export function useDevice() {
-	const [device, setDevice] = useState<Kochi68>();
+	const [device, setDevice] = useState<Hummingbird68>();
 
 	const prompt = useCallback(
 		async (vendorID: number, productID: number) => {
@@ -137,7 +137,7 @@ export function useDevice() {
 
 			const newDevice = devices[0];
 
-			const kochi = await Kochi68.open(newDevice);
+			const kochi = await Hummingbird68.open(newDevice);
 
 			setDevice(kochi);
 		},
