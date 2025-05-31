@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button.tsx";
 import { Slider } from "@/components/ui/slider.tsx";
 import { Toggle } from "@/components/ui/toggle.tsx";
 import {
-  PRODUCT_ID,
-  RGBEffectID,
-  VENDOR_ID,
-  useDevice,
+	PRODUCT_ID,
+	RGBEffectID,
+	VENDOR_ID,
+	useDevice,
 } from "@/hooks/useDevice.ts";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
@@ -115,7 +115,7 @@ function App() {
 				</div>
 			</section>
 
-			<section>
+			{/* <section>
 				<h2 className="text-2xl font-bold">Remap</h2>
 
 				<div className="space-y-1 max-w-[1024px]">
@@ -198,7 +198,7 @@ function App() {
 						<Button>ArrRight</Button>
 					</div>
 				</div>
-			</section>
+			</section> */}
 		</div>
 	);
 }
