@@ -4,7 +4,7 @@ export const VENDOR_ID = 0x1c4f;
 export const PRODUCT_ID = 0xee88;
 
 export const RGBEffectID = {
-	None: 0,
+	None: -1,
 	Waves: 0,
 	Circles: 1,
 	Bubbles: 2,
@@ -30,20 +30,67 @@ type RGBEffect = {
 	sleepTime: number;
 };
 
-class Hummingbird68 {
+export class Hummingbird68 {
 	#hid: HIDDevice;
 
 	static async open(hidDevice: HIDDevice) {
 		await hidDevice.open();
-		return new Hummingbird68(hidDevice);
+
+		const keyboard = new Hummingbird68(hidDevice);
+		await keyboard.init();
+
+		return keyboard;
 	}
 
 	private constructor(hidDevice: HIDDevice) {
 		this.#hid = hidDevice;
+		this.#hid.oninputreport = (evt) => {
+			console.debug(evt);
+			this.#handleDeviceResponse(evt.data);
+		};
 	}
 
-	changeRGB(effect: RGBEffect) {
-		this.#hid.sendReport(
+	private async init() {
+		// TODO
+		await this.#hid.sendReport(
+			0,
+			new Uint8Array([
+				0x5c,
+				0x02,
+				0x01,
+				0x93,
+				...new Array(64 - 4).fill(0xff),
+			]),
+		);
+	}
+
+	get #number() {
+		return (
+			Math.floor(Math.random() * Number.MAX_SAFE_INTEGER) &
+			0x00000000ffffffff
+		);
+	}
+
+	#handleDeviceResponse(view: DataView<ArrayBufferLike>) {
+		function dataViewToHexString(dataView: DataView) {
+			if (!(dataView instanceof DataView)) {
+				throw new Error("Input must be a DataView instance.");
+			}
+
+			let hexString = "";
+			for (let i = 0; i < dataView.byteLength; i++) {
+				const byte = dataView.getUint8(i); // Get the byte at the current offset
+				hexString += byte.toString(16).padStart(2, "0"); // Convert to hex and pad with leading zero if needed
+			}
+			return hexString;
+		}
+
+		console.log(dataViewToHexString(view));
+	}
+
+	async changeRGB(effect: RGBEffect) {
+		console.log("sending", effect);
+		await this.#hid.sendReport(
 			0,
 			new Uint8Array([
 				0x5c,
